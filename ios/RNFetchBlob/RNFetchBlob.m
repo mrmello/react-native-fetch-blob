@@ -61,6 +61,18 @@ RCT_EXPORT_MODULE();
     return self;
 }
 
+- (NSArray<NSString *> *)supportedEvents {
+    return @[@"showReviewIosEvent"];
+}
+
+- (void)sendEventShowReview {
+    [self sendEventWithName:@"showReviewIosEvent" body:@"ShowReviewIOS"];
+}
+
+- (void)documentInteractionControllerDidEndPreview:(UIDocumentInteractionController *)controller{
+    [self sendEventShowReview];
+}
+
 - (NSDictionary *)constantsToExport
 {
     return @{

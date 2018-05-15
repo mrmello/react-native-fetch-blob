@@ -18,6 +18,7 @@
 #import <React/RCTBridge.h>
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 #else
 #import "RCTBridgeModule.h"
 #import "RCTLog.h"
@@ -29,7 +30,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface RNFetchBlob : NSObject <RCTBridgeModule, UIDocumentInteractionControllerDelegate> {
+@interface RNFetchBlob : RCTEventEmitter <RCTBridgeModule, UIDocumentInteractionControllerDelegate> {
 
     NSString * filePathPrefix;
 
