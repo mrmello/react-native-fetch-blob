@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.content.FileProvider;
 
 import com.RNFetchBlob.Utils.DataConverter;
@@ -22,6 +23,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.network.CookieJarContainer;
 import com.facebook.react.modules.network.ForwardingCookieHandler;
 import com.facebook.react.modules.network.OkHttpClientProvider;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.bridge.BaseActivityEventListener;
 
 import java.io.File;
 import java.util.HashMap;
@@ -57,7 +60,8 @@ public class RNFetchBlob extends ReactContextBaseJavaModule {
     public RNFetchBlob(ReactApplicationContext reactContext) {
 
         super(reactContext);
-
+        
+        reactContext.addActivityEventListener(mActivityEventListener);
         mClient = OkHttpClientProvider.getOkHttpClient();
         mCookieHandler = new ForwardingCookieHandler(reactContext);
         mCookieJarContainer = (CookieJarContainer) mClient.cookieJar();
@@ -99,8 +103,18 @@ public class RNFetchBlob extends ReactContextBaseJavaModule {
                 RNFetchBlobFS.createFile(path, content, encode, callback);
             }
         });
-
     }
+
+    private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
+
+        @Override
+        public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent intent) {
+            getReactApplicationContext()
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit("cbCloseViewerEvent", "cb");
+          
+        }
+      };
 
     @ReactMethod
     public void actionViewIntent(String path, String mime, final Promise promise) {
@@ -119,14 +133,14 @@ public class RNFetchBlob extends ReactContextBaseJavaModule {
                 // Validate that the device can open the file
                 PackageManager pm = getCurrentActivity().getPackageManager();
                 if (intent.resolveActivity(pm) != null) {
-                    this.getReactApplicationContext().startActivity(intent);
+                    this.getReactApplicationContext().startActivityForResult(intent, 1, new Bundle());
                 }
 
             } else {
                 Intent intent = new Intent(Intent.ACTION_VIEW)
                         .setDataAndType(Uri.parse("file://" + path), mime).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                this.getReactApplicationContext().startActivity(intent);
+                this.getReactApplicationContext().startActivityForResult(intent, 1, new Bundle());
             }
 
             ActionViewVisible = true;
