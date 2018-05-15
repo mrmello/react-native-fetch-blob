@@ -62,11 +62,11 @@ RCT_EXPORT_MODULE();
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"callBackDoneEvent"];
+    return @[@"cbDoneEvent"];
 }
 
 - (void)callDoneEvent {
-    [self sendEventWithName:@"callBackDoneEvent" body:@"cb"];
+    [self sendEventWithName:@"cbDoneEvent" body:@"cb"];
 }
 
 - (void)documentInteractionControllerDidEndPreview:(UIDocumentInteractionController *)controller{
