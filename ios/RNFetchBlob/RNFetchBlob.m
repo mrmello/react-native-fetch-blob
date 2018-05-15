@@ -62,15 +62,15 @@ RCT_EXPORT_MODULE();
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"showReviewIosEvent"];
+    return @[@"callBackDoneEvent"];
 }
 
-- (void)sendEventShowReview {
-    [self sendEventWithName:@"showReviewIosEvent" body:@"ShowReviewIOS"];
+- (void)callDoneEvent {
+    [self sendEventWithName:@"callBackDoneEvent" body:@"cb"];
 }
 
 - (void)documentInteractionControllerDidEndPreview:(UIDocumentInteractionController *)controller{
-    [self sendEventShowReview];
+    [self callDoneEvent];
 }
 
 - (NSDictionary *)constantsToExport
